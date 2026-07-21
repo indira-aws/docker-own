@@ -1,0 +1,21 @@
+GitHub Repository
+│
+├── index.html
+├── Dockerfile
+├── deployment.yaml
+├── service.yaml
+├── ingress.yaml (optional)
+├── prometheus/
+│     ├── prometheus.yaml
+│     └── deployment.yaml
+├── grafana/
+│     └── deployment.yaml
+├── monitoring/
+│     ├── kube-state-metrics.yaml
+│     ├── node-exporter.yaml
+│     └── namespace.yaml
+├── screenshots/
+├── README.md
+└── .github/
+      └── workflows/
+           docker-build.yml   (optional later)
