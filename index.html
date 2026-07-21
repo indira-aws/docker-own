@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fancy Landing Page</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #1f1c2c, #928dab);
+      color: #fff;
+      text-align: center;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+    h1 {
+      font-size: 3em;
+      margin: 0;
+      animation: glow 2s ease-in-out infinite alternate;
+    }
+    @keyframes glow {
+      from { text-shadow: 0 0 10px #ff6ec4, 0 0 20px #ff6ec4; }
+      to { text-shadow: 0 0 20px #7873f5, 0 0 40px #7873f5; }
+    }
+    p {
+      font-size: 1.2em;
+      margin: 20px 0;
+    }
+    .btn {
+      background: #ff6ec4;
+      border: none;
+      padding: 15px 30px;
+      font-size: 1em;
+      border-radius: 30px;
+      cursor: pointer;
+      color: #fff;
+      transition: 0.3s;
+      text-decoration: none;
+    }
+    .btn:hover {
+      background: #7873f5;
+      transform: scale(1.1);
+    }
+    footer {
+      position: absolute;
+      bottom: 20px;
+      font-size: 0.9em;
+      opacity: 0.7;
+    }
+  </style>
+</head>
+<body>
+  <h1>✨ Welcome to My Fancy Page ✨</h1>
+  <p>Crafted with love, gradients, and glowing animations.</p>
+  <a href="#" class="btn">Explore More</a>
+  <footer>© 2026 My Fancy Site</footer>
+</body>
+</html>
