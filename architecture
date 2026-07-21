@@ -19,3 +19,251 @@ GitHub Repository
 └── .github/
       └── workflows/
            docker-build.yml   (optional later)
+
+Phase 1 - Deploy your DockerHub Image on Kubernetes
+
+Instead of running
+
+docker run
+
+deploy it on Kubernetes.
+
+Create
+
+deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-webapp
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: web
+  template:
+    metadata:
+      labels:
+        app: web
+    spec:
+      containers:
+      - name: web
+        image: yourdockerhubusername/myapp:latest
+        ports:
+        - containerPort: 80
+
+Apply
+
+kubectl apply -f deployment.yaml
+
+Create Service
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-web-service
+spec:
+  selector:
+    app: web
+  ports:
+  - port: 80
+    targetPort: 80
+  type: NodePort
+kubectl apply -f service.yaml
+
+Access
+
+minikube service my-web-service
+
+Now your app is running inside Kubernetes.
+
+Phase 2 - Scale Application
+kubectl scale deployment my-webapp --replicas=5
+
+Show
+
+kubectl get pods
+
+Now your resume can mention
+
+Deployed containerized applications on Kubernetes with ReplicaSets and Deployments.
+
+Phase 3 - Rolling Update
+
+Update image
+
+docker build -t yourrepo:v2 .
+docker push yourrepo:v2
+
+Then
+
+kubectl set image deployment/my-webapp web=yourrepo:v2
+
+Observe
+
+kubectl rollout status deployment my-webapp
+
+Rollback
+
+kubectl rollout undo deployment my-webapp
+
+Interviewers love this.
+
+Phase 4 - Install Prometheus
+
+Use Helm.
+
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+
+helm repo update
+
+helm install prometheus prometheus-community/kube-prometheus-stack
+
+This installs
+
+Prometheus
+Grafana
+AlertManager
+Node Exporter
+kube-state-metrics
+
+in one command.
+
+Check
+
+kubectl get pods -A
+
+You'll see
+
+grafana
+prometheus
+alertmanager
+node-exporter
+kube-state-metrics
+Phase 5 - Access Grafana
+kubectl port-forward svc/prometheus-grafana 3000:80
+
+Open
+
+http://localhost:3000
+
+Default credentials
+
+admin
+
+prom-operator
+
+(or retrieve the password from the Kubernetes secret, depending on the chart version).
+
+Phase 6 - Observe Your Application
+
+Grafana will already have dashboards for:
+
+CPU
+Memory
+Network
+Pods
+Nodes
+Kubernetes Cluster
+Deployments
+ReplicaSets
+
+Generate traffic to your application
+
+while true
+do
+curl http://<service-ip>
+done
+
+Watch Grafana metrics change in real time.
+
+Phase 7 - Add Monitoring for Your Application
+
+If your application exposes metrics (for example, via a /metrics endpoint), create a ServiceMonitor so Prometheus scrapes it automatically.
+
+This demonstrates application-level monitoring in addition to cluster monitoring.
+
+Phase 8 - Add GitHub Actions (Optional but Highly Recommended)
+
+Whenever code is pushed:
+
+GitHub
+      ↓
+Build Docker Image
+      ↓
+Push to DockerHub
+      ↓
+(Optional)
+Deploy to Kubernetes
+
+Typical workflow:
+
+Push Code
+    ↓
+GitHub Actions
+    ↓
+Docker Build
+    ↓
+Docker Push
+    ↓
+kubectl apply
+Phase 9 - Add README
+
+Include
+
+Project architecture
+Docker build
+DockerHub push
+Kubernetes deployment
+Monitoring setup
+Screenshots
+Commands
+Future enhancements
+Phase 10 - Screenshots
+
+Capture and add:
+
+kubectl get pods
+kubectl get svc
+Deployment rollout
+Scaling to multiple replicas
+Grafana dashboard
+Prometheus targets
+Kubernetes cluster overview
+Application running in browser
+
+These make the repository much more impressive to recruiters.
+
+Final Architecture
+Developer
+     │
+     ▼
+ GitHub Repository
+     │
+     ▼
+Docker Build
+     │
+     ▼
+Docker Hub
+     │
+     ▼
+Kubernetes Deployment
+     │
+     ▼
+ReplicaSet
+     │
+     ▼
+Pods
+     │
+     ▼
+Service (NodePort/LoadBalancer)
+     │
+     ▼
+Browser
+
+Prometheus
+     │
+     ▼
+Scrapes Kubernetes Metrics
+     │
+     ▼
+Grafana Dashboards
