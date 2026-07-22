@@ -267,3 +267,87 @@ Scrapes Kubernetes Metrics
      │
      ▼
 Grafana Dashboards
+
+
+Generate traffic to your application
+
+while true
+do
+curl http://<service-ip>
+done
+
+Watch Grafana metrics change in real time.
+
+Phase 7 - Add Monitoring for Your Application
+
+If your application exposes metrics (for example, via a /metrics endpoint), create a ServiceMonitor so Prometheus scrapes it automatically.
+
+This demonstrates application-level monitoring in addition to cluster monitoring.
+
+Phase- 8
+Perfect — let’s extend your Minikube Ingress setup with TLS/HTTPS so you can access your app securely in the browser.
+
+🔑 Steps to Add TLS to Ingress
+Generate a self‑signed certificate
+
+bash
+openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+  -keyout tls.key -out tls.crt \
+  -subj "/CN=my-web-service.local/O=my-web-service"
+CN must match the hostname you used in your Ingress (my-web-service.local).
+
+Create a Kubernetes Secret
+
+bash
+kubectl create secret tls my-web-tls \
+  --cert=tls.crt --key=tls.key
+Update your Ingress resource
+Edit my-web-ingress.yaml to include TLS:
+
+yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: my-web-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  tls:
+  - hosts:
+    - my-web-service.local
+    secretName: my-web-tls
+  rules:
+  - host: my-web-service.local
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: my-web-service
+            port:
+              number: 80
+Apply it:
+
+bash
+kubectl apply -f my-web-ingress.yaml
+Update your hosts file
+Make sure you still have:
+
+Code
+<minikube-ip>   my-web-service.local
+in /etc/hosts (Linux/macOS) or C:\Windows\System32\drivers\etc\hosts (Windows).
+
+Access via HTTPS
+Open:
+
+Code
+https://my-web-service.local/
+Your browser will warn about the self‑signed certificate. Accept/allow it, and you’ll see your app over HTTPS.
+
+✅ Summary
+You now have a TLS Ingress with a self‑signed cert.
+
+Traffic flows: Browser → Ingress (HTTPS) → Service → Pod.
+
+For production, you’d replace the self‑signed cert with a real one from Let’s Encrypt or another CA.
